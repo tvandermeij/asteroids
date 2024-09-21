@@ -12,6 +12,7 @@ def main():
     pygame.init()
     time = pygame.time.Clock()
     dt = 0
+    score = 0
 
     updateable = pygame.sprite.Group()
     drawable = pygame.sprite.Group()
@@ -26,7 +27,7 @@ def main():
 
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     player = Player(SCREEN_WIDTH/2, SCREEN_HEIGHT/2)
-    AsteroidField()
+    asteroidfield = AsteroidField()
 
     print("Starting asteroids!")
     print(f"Screen width: {SCREEN_WIDTH}")
@@ -40,12 +41,22 @@ def main():
 
         dt = time.tick(60) / 1000 
 
-        for item in updateable:
+        for item in updateable: 
             item.update(dt)
+
+        for item in asteroids:
+            for bullet in shots:
+                if item.collision(bullet) == True:
+                    item.split(asteroidfield)
+                    bullet.kill()
+                    score += 1
         
         for item in asteroids:
-            if item.collision(player) == True:
+            if item.collision(player) == True: 
+                print("Game over!")
+                print(f"Your score was: {score}")
                 return True
+
         
         pygame.Surface.fill(screen, "black")
 
